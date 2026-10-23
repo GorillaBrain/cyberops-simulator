@@ -2,6 +2,8 @@
 
 > **Detect the signal. Investigate the evidence. Stop the threat.**
 
+**Live Production Demo:** [https://cyberops-simulator.vercel.app](https://cyberops-simulator.vercel.app)
+
 **CyberOps Simulator** is an interactive cybersecurity operations center (SOC) simulation game and defensive analyst training environment built with React, Vite, and a standalone JavaScript investigation engine.
 
 > **Disclaimer:** CyberOps Simulator is an educational training simulator using 100% synthetic telemetry, reserved documentation IP ranges (`192.0.2.0/24`, `198.51.100.0/24`, `203.0.113.0/24`), and reserved example domains (`*.example.com`, `*.example.net`, `*.example.org`). It is **not** a production SIEM and is not a substitute for real enterprise incident response procedures.

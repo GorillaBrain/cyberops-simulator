@@ -1,5 +1,7 @@
 # Deployment Guide (Vercel)
 
+**Live Production URL:** [https://cyberops-simulator.vercel.app](https://cyberops-simulator.vercel.app)
+
 CyberOps Simulator is a static Vite single-page application (SPA) designed to deploy seamlessly on the **Vercel Hobby (Free)** plan with zero backend dependencies or API keys.
 
 ## Vercel Configuration
