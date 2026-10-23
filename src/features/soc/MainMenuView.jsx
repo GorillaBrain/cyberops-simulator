@@ -11,10 +11,13 @@ import {
   Terminal,
   BookOpen,
   Settings,
-  RotateCcw
+  RotateCcw,
+  Sparkles,
+  Flag
 } from 'lucide-react';
 import { getRankForXp, ACHIEVEMENTS } from '../../engine/progressionEngine.js';
 import { getDailyChallengeInfo } from '../../data/missions/extraModes.js';
+import { GUIDED_WALKTHROUGHS } from '../../data/missions/guidedWalkthroughs.js';
 import { SeverityBadge } from '../../components/SeverityBadge.jsx';
 
 export function MainMenuView({
@@ -32,58 +35,56 @@ export function MainMenuView({
   const activeMission = missions.find((m) => m.id === profile.activeMissionId) || missions[0];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-      {/* Hero Banner */}
-      <section className="panel-elevated" style={{ padding: '24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+      {/* Gamified Academy Hero Banner */}
+      <section
+        className="panel-elevated"
+        style={{
+          padding: '26px',
+          background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.14) 0%, rgba(25, 37, 61, 0.96) 60%)'
+        }}
+      >
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'flex-start',
+            alignItems: 'center',
             flexWrap: 'wrap',
-            gap: '20px'
+            gap: '24px'
           }}
         >
-          <div style={{ maxWidth: '680px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <span className="sim-badge">SIMULATED TRAINING ENVIRONMENT</span>
-              <span className="tag-chip">v1.0.0</span>
+          <div style={{ maxWidth: '700px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+              <span className="sim-badge">INTERACTIVE SOC LEARNING PATH</span>
+              <span className="tag-chip">Step-by-Step Guided Rooms</span>
             </div>
-            <h1 style={{ margin: '0 0 8px 0', fontSize: '26px', fontWeight: 700, letterSpacing: '-0.01em' }}>
+            <h1 style={{ margin: '0 0 6px 0', fontSize: '28px', fontWeight: 800, letterSpacing: '-0.01em' }}>
               CyberOps Simulator
             </h1>
-            <p style={{ margin: '0 0 18px 0', fontSize: '15px', color: 'var(--accent-cyan)', fontWeight: 500 }}>
+            <p style={{ margin: '0 0 12px 0', fontSize: '15.5px', color: '#34d399', fontWeight: 600 }}>
               Detect the signal. Investigate the evidence. Stop the threat.
             </p>
-            <p style={{ margin: '0 0 20px 0', color: 'var(--text-secondary)', fontSize: '13.5px' }}>
-              Step into the Security Operations Center at Aegis BioLabs. Triage incoming telemetry alerts,
-              execute structured queries across authentication, endpoint, DNS, and proxy logs, build an
-              evidentiary timeline, map adversary techniques to MITRE ATT&amp;CK, and execute proportionate
-              containment.
+            <p style={{ margin: '0 0 20px 0', color: 'var(--text-secondary)', fontSize: '14px' }}>
+              Learn real-world Security Operations Center (SOC) investigation one guided task at a time.
+              Commander Vela walks you through every room with bite-sized lessons, interactive check-in
+              questions, 1-click query helpers, and realistic attack simulations.
             </p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
               <button
                 type="button"
                 className="btn btn-primary"
+                style={{ padding: '10px 18px', fontSize: '14px' }}
                 onClick={() => onContinueMission(activeMission.id)}
               >
-                <Play size={15} />
+                <Play size={16} />
                 <span>
                   {profile.activeMissionId
-                    ? `Continue: ${activeMission.title}`
+                    ? `Continue Room: ${activeMission.title}`
                     : completedCount === 0
                     ? 'Start Tutorial: Mission 1'
-                    : `Launch ${activeMission.title}`}
+                    : `Play ${activeMission.title}`}
                 </span>
-              </button>
-              <button
-                type="button"
-                className="btn"
-                onClick={() => onNavigate('soc_center')}
-              >
-                <Compass size={15} />
-                <span>Open SOC Command Center</span>
               </button>
               <button
                 type="button"
@@ -91,7 +92,7 @@ export function MainMenuView({
                 onClick={() => onNavigate('extra_modes')}
               >
                 <Terminal size={15} />
-                <span>Practice Lab &amp; Endless Triage</span>
+                <span>Practice Lab &amp; Rapid Triage</span>
               </button>
               <button
                 type="button"
@@ -104,36 +105,38 @@ export function MainMenuView({
             </div>
           </div>
 
-          {/* Analyst Rank Summary Card */}
+          {/* Gamified Player Level Card */}
           <div
             className="panel"
             style={{
-              minWidth: '280px',
-              flex: '0 1 320px',
-              backgroundColor: 'var(--bg-input)'
+              minWidth: '290px',
+              flex: '0 1 330px',
+              backgroundColor: 'var(--bg-input)',
+              borderColor: 'var(--border-strong)'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-              <span style={{ fontSize: '12px', color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                Analyst Dossier
+              <span style={{ fontSize: '12px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 700 }}>
+                Analyst Rank Progress
               </span>
-              <span className="mono" style={{ fontSize: '12px', color: rank.badgeColor, fontWeight: 600 }}>
-                LVL {rank.level}
+              <span className="xp-pill-badge">
+                <Sparkles size={12} />
+                <span>LVL {rank.level}</span>
               </span>
             </div>
-            <div style={{ fontSize: '19px', fontWeight: 700, color: rank.badgeColor, marginBottom: '4px' }}>
+            <div style={{ fontSize: '21px', fontWeight: 800, color: rank.badgeColor, marginBottom: '4px' }}>
               {rank.title}
             </div>
             <div className="mono" style={{ fontSize: '13px', color: 'var(--text-primary)', marginBottom: '10px' }}>
-              {rank.xp} XP Total • {completedCount}/{missions.length} Missions Completed
+              {rank.xp} XP • {completedCount} / {missions.length} Rooms Cleared
             </div>
 
             <div
               style={{
                 width: '100%',
-                height: '8px',
+                height: '10px',
                 backgroundColor: 'var(--bg-panel)',
-                borderRadius: '4px',
+                borderRadius: '999px',
                 overflow: 'hidden',
                 marginBottom: '6px',
                 border: '1px solid var(--border-subtle)'
@@ -143,94 +146,28 @@ export function MainMenuView({
                 style={{
                   width: `${rank.progressPercent}%`,
                   height: '100%',
-                  backgroundColor: 'var(--accent-cyan)'
+                  background: 'linear-gradient(90deg, #10b981, #22d3ee)'
                 }}
               />
             </div>
-            <div style={{ fontSize: '11.5px', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
               {rank.nextRank
-                ? `${rank.xpToNext} XP needed for ${rank.nextRank.title}`
-                : 'Maximum Analyst Rank Achieved'}
+                ? `${rank.xpToNext} XP to promote to ${rank.nextRank.title}`
+                : 'Maximum Analyst Rank Unlocked!'}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Daily Challenge & Quick Stats Row */}
-      <div className="grid-2">
-        <section className="panel">
-          <div className="panel-header">
-            <h2 className="panel-title">
-              <Calendar size={15} color="var(--accent-cyan)" />
-              <span>Daily Operational Challenge ({daily.date})</span>
-            </h2>
-            <span className="tag-chip">+{daily.bonusXp} Bonus XP</span>
-          </div>
-          <div style={{ marginBottom: '8px', fontWeight: 600, fontSize: '15px' }}>{daily.missionTitle}</div>
-          <p style={{ margin: '0 0 12px 0', color: 'var(--text-secondary)', fontSize: '13px' }}>
-            <strong>Operational Modifier:</strong> {daily.modifier}
-          </p>
-          <button
-            type="button"
-            className="btn btn-sm btn-primary"
-            onClick={() => onSelectMission(daily.missionId)}
-          >
-            <Play size={13} />
-            <span>Deploy to Daily Scenario</span>
-          </button>
-        </section>
-
-        <section className="panel">
-          <div className="panel-header">
-            <h2 className="panel-title">
-              <Award size={15} color="var(--accent-cyan)" />
-              <span>Analyst Achievements ({(profile.unlockedAchievements || []).length}/{ACHIEVEMENTS.length})</span>
-            </h2>
-            <button type="button" className="btn btn-sm" onClick={() => onNavigate('settings')}>
-              <Settings size={13} />
-              <span>Manage Save</span>
-            </button>
-          </div>
-          {(profile.unlockedAchievements || []).length === 0 ? (
-            <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>
-              No achievements unlocked yet. Complete <strong>Mission 1: The Noisy Login</strong> to earn your first
-              SOC commendation!
-            </div>
-          ) : (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-              {ACHIEVEMENTS.map((ach) => {
-                const unlocked = (profile.unlockedAchievements || []).includes(ach.id);
-                return (
-                  <span
-                    key={ach.id}
-                    className="tag-chip"
-                    title={ach.description}
-                    style={{
-                      borderColor: unlocked ? 'var(--accent-cyan)' : 'var(--border-subtle)',
-                      color: unlocked ? 'var(--accent-cyan)' : 'var(--text-muted)',
-                      backgroundColor: unlocked ? 'var(--accent-cyan-dim)' : 'transparent',
-                      padding: '3px 8px'
-                    }}
-                  >
-                    {unlocked ? '★ ' : '○ '}
-                    {ach.title}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-        </section>
-      </div>
-
-      {/* Mission Campaign Catalogue */}
+      {/* Guided Campaign Rooms Path */}
       <section className="panel">
         <div className="panel-header">
           <h2 className="panel-title">
-            <Shield size={16} color="var(--accent-cyan)" />
-            <span>SOC Campaign Missions (8 Scenarios)</span>
+            <Flag size={16} color="#34d399" />
+            <span>Guided SOC Learning Path (8 Interactive Rooms)</span>
           </h2>
-          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-            All missions feature deterministic synthetic telemetry &amp; full replayability
+          <span style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>
+            Each room includes step-by-step instructions, check-in questions &amp; live log investigation
           </span>
         </div>
 
@@ -239,6 +176,8 @@ export function MainMenuView({
             const completion = profile.completedMissions?.[m.id] || null;
             const prevCompleted = idx === 0 || Boolean(profile.completedMissions?.[missions[idx - 1].id]);
             const isUnlocked = idx <= 1 || prevCompleted || Boolean(completion);
+            const wt = GUIDED_WALKTHROUGHS[m.id];
+            const stepCount = wt ? wt.steps.length : 3;
 
             return (
               <div
@@ -247,52 +186,59 @@ export function MainMenuView({
                 style={{
                   backgroundColor: 'var(--bg-input)',
                   borderColor: completion
-                    ? 'rgba(16, 185, 129, 0.4)'
+                    ? 'rgba(16, 185, 129, 0.5)'
                     : isUnlocked
                     ? 'var(--border-strong)'
                     : 'var(--border-subtle)',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  gap: '12px'
+                  gap: '14px'
                 }}
               >
                 <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                    <span className="mono" style={{ fontSize: '11.5px', color: 'var(--accent-cyan)' }}>
-                      {m.difficulty.toUpperCase()} • ~{m.estimatedMinutes} MIN • {m.xpReward} XP
-                    </span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span className="sim-badge">ROOM {idx + 1}</span>
+                      <span className="tag-chip">{m.difficulty}</span>
+                      <span className="tag-chip">{stepCount} Guided Tasks</span>
+                    </div>
                     {completion ? (
                       <span className="sev-badge sev-safe">
                         <CheckCircle2 size={12} />
-                        <span>GRADE {completion.bestGrade} ({completion.bestScore}%)</span>
+                        <span>RANK {completion.bestGrade} ({completion.bestScore}%)</span>
                       </span>
                     ) : (
-                      <SeverityBadge severity={m.briefing?.initialAlert?.severity || 'medium'} />
+                      <span className="xp-pill-badge">+{m.xpReward} XP</span>
                     )}
                   </div>
 
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 600 }}>{m.title}</h3>
-                  <div style={{ fontSize: '12.5px', color: 'var(--accent-blue)', marginBottom: '8px' }}>
-                    {m.subtitle}
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '17px', fontWeight: 700 }}>{m.title}</h3>
+                  <div style={{ fontSize: '13px', color: 'var(--accent-cyan)', fontWeight: 600, marginBottom: '8px' }}>
+                    Focus: {m.subtitle}
                   </div>
                   <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)' }}>
                     {m.briefing.summary}
                   </p>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
-                  <div className="mono" style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
-                    {m.events.length} Telemetry Events • {m.briefing.telemetrySources.length} Sources
-                  </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: '1px solid var(--border-subtle)', flexWrap: 'wrap', gap: '8px' }}>
+                  <SeverityBadge severity={m.briefing?.initialAlert?.severity || 'medium'} />
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <button
                       type="button"
-                      className={`btn btn-sm ${completion ? '' : 'btn-primary'}`}
+                      className="btn btn-sm"
                       onClick={() => onSelectMission(m.id)}
                     >
+                      {completion ? 'Replay Briefing' : 'Open Briefing'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-primary"
+                      onClick={() => onContinueMission(m.id)}
+                    >
                       {completion ? <RotateCcw size={13} /> : isUnlocked ? <Play size={13} /> : <Lock size={13} />}
-                      <span>{completion ? 'Replay Mission' : 'Open Briefing'}</span>
+                      <span>{completion ? 'Replay Guided Room' : 'Enter Guided Room'}</span>
                     </button>
                   </div>
                 </div>
@@ -302,47 +248,64 @@ export function MainMenuView({
         </div>
       </section>
 
-      {/* Recent Investigation History */}
-      <section className="panel">
-        <div className="panel-header">
-          <h2 className="panel-title">
-            <Clock size={15} color="var(--accent-cyan)" />
-            <span>Recent Investigation Log</span>
-          </h2>
-        </div>
-        {(!profile.missionHistory || profile.missionHistory.length === 0) ? (
-          <div style={{ color: 'var(--text-secondary)', fontSize: '13px' }}>
-            No completed investigations recorded yet. Your completed incident assessments, scores, and grades will appear here.
+      {/* Daily Challenge & Achievements Row */}
+      <div className="grid-2">
+        <section className="panel">
+          <div className="panel-header">
+            <h2 className="panel-title">
+              <Calendar size={15} color="var(--accent-cyan)" />
+              <span>Daily Challenge ({daily.date})</span>
+            </h2>
+            <span className="xp-pill-badge">+{daily.bonusXp} Bonus XP</span>
           </div>
-        ) : (
-          <div className="table-container">
-            <table className="event-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Mission</th>
-                  <th>Grade</th>
-                  <th>Score</th>
-                  <th>XP Awarded</th>
-                </tr>
-              </thead>
-              <tbody>
-                {profile.missionHistory.slice(0, 8).map((item) => (
-                  <tr key={item.id}>
-                    <td className="mono">{item.timestamp.slice(0, 19).replace('T', ' ')} UTC</td>
-                    <td>{item.missionTitle}</td>
-                    <td>
-                      <span className="sev-badge sev-safe">{item.grade}</span>
-                    </td>
-                    <td className="mono">{item.score}%</td>
-                    <td className="mono">+{item.xpDelta} XP</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div style={{ marginBottom: '6px', fontWeight: 700, fontSize: '15px' }}>{daily.missionTitle}</div>
+          <p style={{ margin: '0 0 12px 0', color: 'var(--text-secondary)', fontSize: '13px' }}>
+            <strong>Modifier:</strong> {daily.modifier}
+          </p>
+          <button
+            type="button"
+            className="btn btn-sm btn-primary"
+            onClick={() => onContinueMission(daily.missionId)}
+          >
+            <Play size={13} />
+            <span>Launch Daily Challenge</span>
+          </button>
+        </section>
+
+        <section className="panel">
+          <div className="panel-header">
+            <h2 className="panel-title">
+              <Award size={15} color="#fbbf24" />
+              <span>Earned Badges ({(profile.unlockedAchievements || []).length}/{ACHIEVEMENTS.length})</span>
+            </h2>
+            <button type="button" className="btn btn-sm" onClick={() => onNavigate('settings')}>
+              <Settings size={13} />
+              <span>Save Data</span>
+            </button>
           </div>
-        )}
-      </section>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {ACHIEVEMENTS.map((ach) => {
+              const unlocked = (profile.unlockedAchievements || []).includes(ach.id);
+              return (
+                <span
+                  key={ach.id}
+                  className="tag-chip"
+                  title={ach.description}
+                  style={{
+                    borderColor: unlocked ? '#10b981' : 'var(--border-subtle)',
+                    color: unlocked ? '#6ee7b7' : 'var(--text-muted)',
+                    backgroundColor: unlocked ? 'var(--accent-green-dim)' : 'transparent',
+                    padding: '4px 10px'
+                  }}
+                >
+                  {unlocked ? '🏆 ' : '🔒 '}
+                  {ach.title}
+                </span>
+              );
+            })}
+          </div>
+        </section>
+      </div>
     </div>
   );
 }

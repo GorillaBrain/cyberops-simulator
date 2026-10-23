@@ -171,4 +171,24 @@ describe('CyberOps Simulator — End-to-End Integration & Regression Tests', () 
 
     expect(screen.getByText(/Custom Scenario: The Conference USB Drop/i)).toBeInTheDocument();
   });
+
+  it('supports TryHackMe-style step-by-step guided tasks and interactive Check-In Flag verification', () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole('button', { name: /Start Tutorial: Mission 1/i }));
+
+    // Verify Commander Vela mentor banner and Task 1 accordion are visible
+    expect(screen.getByText(/Commander Vela \(Senior SOC Lead\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Task 1: Filter the Login Logs/i)).toBeInTheDocument();
+
+    // Load suggested query with 1 click
+    fireEvent.click(screen.getByRole('button', { name: /Load Into Search: username = "analyst.test"/i }));
+
+    // Submit the Check-In Question answer for Task 1 (WKSTN-HR-02)
+    const checkInput = screen.getByLabelText(/Answer for Task 1: Filter the Login Logs/i);
+    fireEvent.change(checkInput, { target: { value: 'WKSTN-HR-02' } });
+    fireEvent.click(screen.getByRole('button', { name: /Submit Answer/i }));
+
+    // Verify Task 1 is solved and explanation is displayed
+    expect(screen.getByText(/Spot on! All login attempts came from WKSTN-HR-02/i)).toBeInTheDocument();
+  });
 });

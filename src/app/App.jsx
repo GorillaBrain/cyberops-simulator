@@ -4,10 +4,10 @@ import {
   Award,
   BookOpen,
   Compass,
-  FileSearch,
   Home,
   Settings,
   Shield,
+  Sparkles,
   Terminal
 } from 'lucide-react';
 import { CAMPAIGN_MISSIONS } from '../data/missions/campaignMissions.js';
@@ -52,6 +52,8 @@ function createFreshInvestigationState(mission) {
     inspectedTimeline: false,
     responseActions: [],
     incidentState: createInitialIncidentState(mission),
+    completedWalkthroughSteps: [],
+    answeredQuestions: {},
     assessment: {
       classification: '',
       severity: '',
@@ -204,7 +206,7 @@ export function App() {
     setLastDebriefResult(null);
     setLastProgressionOutcome(null);
     navigateTo('workstation', currentMission.id);
-    showNotification(`Reset investigation workspace for ${currentMission.title}.`);
+    showNotification(`Reset mission room for ${currentMission.title}.`);
   }
 
   function handleCompleteMission() {
@@ -272,26 +274,39 @@ export function App() {
 
   return (
     <div className={`app-shell ${settings.reducedMotion ? 'reduced-motion' : ''}`}>
-      {/* Left Navigation Sidebar */}
-      <aside className="sidebar-nav" aria-label="Primary Navigation">
-        <div className="sidebar-brand">
+      {/* Clean Gamified Top Navbar */}
+      <header className="game-top-navbar" aria-label="Primary Navigation">
+        <div
+          className="brand-cluster"
+          style={{ cursor: 'pointer' }}
+          onClick={() => navigateTo('main_menu')}
+        >
           <div className="brand-icon">
-            <Shield size={19} />
+            <Shield size={20} />
           </div>
           <div>
-            <div className="brand-title">CYBEROPS</div>
-            <div className="brand-subtitle">SOC Simulator</div>
+            <div className="brand-title">CYBEROPS ACADEMY</div>
+            <div className="brand-subtitle">Interactive SOC Game</div>
           </div>
         </div>
 
-        <nav className="nav-links">
+        <nav className="top-nav-pills">
           <button
             type="button"
             className={`nav-btn ${currentView === 'main_menu' ? 'active' : ''}`}
             onClick={() => navigateTo('main_menu')}
           >
-            <Home size={16} />
-            <span>Main Menu &amp; Campaign</span>
+            <Home size={15} />
+            <span>Campaign Map</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-btn ${currentView === 'workstation' || currentView === 'briefing' ? 'active' : ''}`}
+            onClick={() => navigateTo('workstation')}
+          >
+            <Activity size={15} />
+            <span>Active Room: {currentMission.title.split(':')[0]}</span>
           </button>
 
           <button
@@ -299,26 +314,8 @@ export function App() {
             className={`nav-btn ${currentView === 'soc_center' ? 'active' : ''}`}
             onClick={() => navigateTo('soc_center')}
           >
-            <Compass size={16} />
-            <span>SOC Command Center</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-btn ${currentView === 'briefing' ? 'active' : ''}`}
-            onClick={() => navigateTo('briefing')}
-          >
-            <FileSearch size={16} />
-            <span>Mission Briefing</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-btn ${currentView === 'workstation' ? 'active' : ''}`}
-            onClick={() => navigateTo('workstation')}
-          >
-            <Activity size={16} />
-            <span>Investigation Workstation</span>
+            <Compass size={15} />
+            <span>SOC Queue</span>
           </button>
 
           <button
@@ -326,17 +323,8 @@ export function App() {
             className={`nav-btn ${currentView === 'extra_modes' ? 'active' : ''}`}
             onClick={() => navigateTo('extra_modes')}
           >
-            <Terminal size={16} />
+            <Terminal size={15} />
             <span>Practice Lab &amp; Triage</span>
-          </button>
-
-          <button
-            type="button"
-            className={`nav-btn ${currentView === 'settings' ? 'active' : ''}`}
-            onClick={() => navigateTo('settings')}
-          >
-            <Settings size={16} />
-            <span>Settings &amp; Save Data</span>
           </button>
 
           <button
@@ -344,43 +332,36 @@ export function App() {
             className="nav-btn"
             onClick={() => setGlossaryOpen(true)}
           >
-            <BookOpen size={16} />
-            <span>SOC Field Glossary</span>
+            <BookOpen size={15} />
+            <span>Glossary</span>
+          </button>
+
+          <button
+            type="button"
+            className={`nav-btn ${currentView === 'settings' ? 'active' : ''}`}
+            onClick={() => navigateTo('settings')}
+            aria-label="Settings"
+          >
+            <Settings size={15} />
           </button>
         </nav>
 
-        <div className="sidebar-footer">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <Award size={15} color={rank.badgeColor} />
-            <strong style={{ fontSize: '13px', color: rank.badgeColor }}>{rank.title}</strong>
+        <div className="player-hud-pill">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Award size={16} color={rank.badgeColor} />
+            <span style={{ fontWeight: 700, fontSize: '13px', color: rank.badgeColor }}>
+              Lvl {rank.level} {rank.title}
+            </span>
           </div>
-          <div className="mono" style={{ fontSize: '11.5px', color: 'var(--text-secondary)' }}>
-            {profile.analystName} • {profile.xp} XP
-          </div>
+          <span className="xp-pill-badge">
+            <Sparkles size={12} />
+            <span>{profile.xp} XP</span>
+          </span>
         </div>
-      </aside>
+      </header>
 
       {/* Main Content Area */}
       <div className="main-viewport">
-        <header className="top-statusbar">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span className="sim-badge">DEFENSIVE TRAINING SIMULATION</span>
-            <span className="mono" style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-              Active Scenario: <strong style={{ color: 'var(--text-primary)' }}>{currentMission.title}</strong>
-            </span>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span className="mono" style={{ fontSize: '12px', color: 'var(--accent-cyan)' }}>
-              Rank: {rank.title} ({profile.xp} XP)
-            </span>
-            <button type="button" className="btn btn-sm" onClick={() => setGlossaryOpen(true)}>
-              <BookOpen size={13} />
-              <span>Glossary</span>
-            </button>
-          </div>
-        </header>
-
         <main className="page-content">
           {currentView === 'main_menu' && (
             <MainMenuView
